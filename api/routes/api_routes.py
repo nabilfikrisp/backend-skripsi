@@ -6,6 +6,7 @@ from PIL import Image
 from pathlib import Path
 from gnn_model.mobile_vig import mobilevig_ti
 from torchvision.transforms import v2
+from flask_cors import cross_origin
 
 api_router = Blueprint("api", __name__, url_prefix="/api")
 
@@ -13,7 +14,7 @@ ALLOWED_EXTENSIONS = {"jpg", "jpeg"}
 
 class_names = ["downdog", "goddess", "plank", "tree", "warrior2"]
 
-model_path = Path("gnn_model/mobile_vig_checkpoint.pth")
+model_path = Path("gnn_model/eksperimen_4_mobile_vig.pth")
 checkpoint = torch.load(model_path, map_location=torch.device("cpu"))
 state_dict = checkpoint["model_state_dict"]
 model = mobilevig_ti(num_classes=len(class_names))
@@ -64,6 +65,7 @@ def hello_router():
 
 
 @api_router.route("/predict", methods=["POST"])
+@cross_origin()
 def predict():
     try:
         if "file" not in request.files:
